@@ -4,12 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { createSelector } from 'reselect';
 
-import {
-	heroesFetching,
-	heroesFetched,
-	heroesFetchingError,
-	heroDeleted,
-} from '../../actions';
+import { fetchHeroes, heroDeleted } from '../../actions';
 import HeroesListItem from '../heroesListItem/HeroesListItem';
 import Spinner from '../spinner/Spinner';
 import './heroList.scss';
@@ -29,17 +24,12 @@ const HeroesList = () => {
 
 	const filteredHeroes = useSelector(filteredHeoresSelector);
 
-	const heroesLoadingStatus = useSelector((state) => state.heroesLoadingStatus);
+	const heroesLoadingStatus = useSelector((state) => state.heroes.heroesLoadingStatus);
 	const dispatch = useDispatch();
 	const { request } = useHttp();
 
 	useEffect(() => {
-		dispatch(heroesFetching());
-		request('http://localhost:3001/heroes')
-			.then((data) => dispatch(heroesFetched(data)))
-			.catch(() => dispatch(heroesFetchingError()));
-
-		// eslint-disable-next-line
+		dispatch(fetchHeroes(request));
 	}, []);
 
 	const onDelete = useCallback(
